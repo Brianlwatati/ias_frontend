@@ -9,7 +9,9 @@ import type { PaginatedResponse } from "@/types/api";
 export const usersApi = {
   list: (params?: { page?: number; pageSize?: number; companyId?: string }) =>
     apiClient
-      .get<PaginatedResponse<ManagedUser>>("/users", { params })
+      .get<
+        PaginatedResponse<ManagedUser>
+      >(params?.companyId ? `/usercompanies/${params.companyId}/users` : "/usercompanies", { params: { ...params, companyId: undefined } })
       .then((r) => r.data),
 
   get: (id: string) =>
@@ -21,6 +23,5 @@ export const usersApi = {
   update: (id: string, payload: UpdateUserPayload) =>
     apiClient.patch<ManagedUser>(`/users/${id}`, payload).then((r) => r.data),
 
-  remove: (id: string) =>
-    apiClient.delete(`/users/${id}`).then((r) => r.data),
+  remove: (id: string) => apiClient.delete(`/users/${id}`).then((r) => r.data),
 };

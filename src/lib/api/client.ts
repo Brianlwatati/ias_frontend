@@ -1,6 +1,15 @@
-import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
+import axios, {
+  AxiosResponse,
+  type AxiosError,
+  type InternalAxiosRequestConfig,
+} from "axios";
 import { session } from "@/lib/auth/session";
-import type { ApiError } from "@/types/api";
+import type {
+  ApiEnvelope,
+  ApiError,
+  ListEnvelope,
+  PaginatedResponse,
+} from "@/types/api";
 
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1",
@@ -20,12 +29,17 @@ apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 let refreshPromise: Promise<string> | null = null;
 
 async function refreshAccessToken(): Promise<string> {
+  const refreshToken = session.getRefreshToken();
   const { data } = await axios.post<{ accessToken: string }>(
     `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
-    {},
-    { withCredentials: true }
+    { refreshToken: refreshToken ?? "" },
+    { withCredentials: true },
   );
-  session.setAccessToken(data.accessToken);
+
+  if (data.accessToken) {
+    session.setAccessToken(data.accessToken);
+  }
+
   return data.accessToken;
 }
 
@@ -64,5 +78,25 @@ apiClient.interceptors.response.use(
         ?.errors,
     };
     return Promise.reject(apiError);
-  }
+  },
 );
+
+// Every successful ias_backend response is { success, message, data }.
+// This peels off the envelope so api/* modules can just work with T.
+export async function unwrap<T>(
+  request: Promise<AxiosResponse<ApiEnvelope<T>>>,
+): Promise<T> {
+  const response = await request;
+  return response.data.data;
+}
+
+// List endpoints return { success, message, data: T[], pagination }
+export async function unwrapList<T>(
+  request: Promise<AxiosResponse<ListEnvelope<T>>>,
+): Promise<PaginatedResponse<T>> {
+  const response = await request;
+  return {
+    data: response.data.data,
+    pagination: response.data.pagination,
+  };
+}

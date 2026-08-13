@@ -2,13 +2,20 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Building2, LayoutDashboard, Package, ShieldCheck, Users } from "lucide-react";
+import {
+  Building2,
+  LayoutDashboard,
+  Package,
+  ShieldCheck,
+  Users,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { href: "/companies", label: "Companies", icon: Building2 },
   { href: "/products", label: "Products", icon: Package },
+  { href: "/roles", label: "Roles", icon: ShieldCheck },
   { href: "/users", label: "Users", icon: Users },
 ];
 
@@ -35,7 +42,7 @@ export function Sidebar() {
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                 isActive
                   ? "bg-brand-600/15 text-brand-300"
-                  : "text-slate-400 hover:bg-surface-raised hover:text-slate-200"
+                  : "text-slate-400 hover:bg-surface-raised hover:text-slate-200",
               )}
             >
               <Icon className="h-4 w-4" />

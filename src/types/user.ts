@@ -15,7 +15,8 @@ export interface CreateUserPayload {
   companyId?: string;
 }
 
-export interface UpdateUserPayload
-  extends Partial<Omit<CreateUserPayload, "password">> {
-  isActive?: boolean;
+export interface UpdateUserPayload extends Partial<
+  Omit<CreateUserPayload, "password">
+> {
+  status?: string;
 }

@@ -5,12 +5,27 @@ export interface ApiError {
   errors?: Record<string, string[]>;
 }
 
+export interface Pagination {
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface ListEnvelope<T> {
+  success: boolean;
+  message: string;
+  data: T[];
+  pagination: Pagination;
+}
+
+export interface ApiEnvelope<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
+
 export interface PaginatedResponse<T> {
   data: T[];
-  meta: {
-    page: number;
-    pageSize: number;
-    total: number;
-    totalPages: number;
-  };
+  pagination: Pagination;
 }

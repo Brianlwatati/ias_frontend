@@ -67,9 +67,8 @@ export function useAuth() {
       data: { user: loggedInUser, tokens },
     } = await authApi.login(payload);
 
-    console.log("Logged in user:", loggedInUser);
-    console.log("Tokens:", tokens);
     session.setAccessToken(tokens.accessToken);
+    session.setRefreshToken(tokens.refreshToken);
     session.setAuthCookie();
     setUser(loggedInUser);
     setStatus("authenticated");
@@ -83,6 +82,10 @@ export function useAuth() {
       session.clear();
       setUser(null);
       setStatus("unauthenticated");
+
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
+      }
     }
   }
 
