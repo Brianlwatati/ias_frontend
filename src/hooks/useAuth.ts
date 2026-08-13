@@ -28,6 +28,26 @@ export function useAuth() {
 
   useEffect(() => {
     if (status !== "idle") return;
+
+    const isPublicPage =
+      typeof window !== "undefined" &&
+      ["/login", "/register"].some((path) =>
+        window.location.pathname.startsWith(path),
+      );
+
+    if (isPublicPage) {
+      setUser(null);
+      setStatus("unauthenticated");
+      return;
+    }
+
+    const token = session.getAccessToken();
+    if (!token) {
+      setUser(null);
+      setStatus("unauthenticated");
+      return;
+    }
+
     setStatus("loading");
     authApi
       .me()
@@ -37,14 +57,20 @@ export function useAuth() {
       })
       .catch(() => {
         setUser(null);
+        session.clear();
         setStatus("unauthenticated");
       });
   }, [status, setUser, setStatus]);
 
   async function login(payload: LoginPayload) {
-    const data = await authApi.login(payload);
-    const { user: loggedInUser, tokens } = data.data;
+    const {
+      data: { user: loggedInUser, tokens },
+    } = await authApi.login(payload);
+
+    console.log("Logged in user:", loggedInUser);
+    console.log("Tokens:", tokens);
     session.setAccessToken(tokens.accessToken);
+    session.setAuthCookie();
     setUser(loggedInUser);
     setStatus("authenticated");
     return loggedInUser;

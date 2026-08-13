@@ -1,20 +1,19 @@
 export interface Product {
   id: string;
-  companyId: string;
   name: string;
-  key: string;
+  code: string;
   description?: string;
-  isActive: boolean;
+  status: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface CreateProductPayload {
   name: string;
-  key: string;
+  code: string;
   description?: string;
 }
 
 export interface UpdateProductPayload extends Partial<CreateProductPayload> {
-  isActive?: boolean;
+  status?: string;
 }

@@ -3,8 +3,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { productsApi } from "@/lib/api/products";
 import { Badge } from "@/components/ui/Badge";
-import { Table, TableHead, TableBody, TableRow, TableCell } from "@/components/ui/Table";
+import {
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+} from "@/components/ui/Table";
 import { Button } from "@/components/ui/Button";
+import Link from "next/link";
 
 export default function ProductsPage() {
   const { data, isLoading, isError } = useQuery({
@@ -21,15 +28,16 @@ export default function ProductsPage() {
             Applications/services each company can grant access to.
           </p>
         </div>
-        <Button>New product</Button>
+        <Link href="/products/new">
+          <Button>New product</Button>
+        </Link>
       </div>
 
       <Table>
         <TableHead>
           <TableRow>
             <TableCell header>Name</TableCell>
-            <TableCell header>Key</TableCell>
-            <TableCell header>Company</TableCell>
+            <TableCell header>Code</TableCell>
             <TableCell header>Status</TableCell>
           </TableRow>
         </TableHead>
@@ -41,19 +49,22 @@ export default function ProductsPage() {
           )}
           {isError && (
             <TableRow>
-              <TableCell>Could not load products. Is ias_backend running?</TableCell>
+              <TableCell>
+                Could not load products. Is ias_backend running?
+              </TableCell>
             </TableRow>
           )}
           {data?.data.map((product) => (
             <TableRow key={product.id}>
               <TableCell>{product.name}</TableCell>
               <TableCell>
-                <code className="text-slate-400">{product.key}</code>
+                <code className="text-slate-400">{product.code}</code>
               </TableCell>
-              <TableCell>{product.companyId}</TableCell>
               <TableCell>
-                <Badge tone={product.isActive ? "success" : "neutral"}>
-                  {product.isActive ? "Active" : "Inactive"}
+                <Badge
+                  tone={product.status === "ACTIVE" ? "success" : "neutral"}
+                >
+                  {product.status === "ACTIVE" ? "Active" : "Inactive"}
                 </Badge>
               </TableCell>
             </TableRow>

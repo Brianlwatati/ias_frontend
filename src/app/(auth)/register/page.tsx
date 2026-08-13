@@ -35,8 +35,11 @@ export default function RegisterPage() {
   async function onSubmit(values: RegisterForm) {
     setIsSubmitting(true);
     try {
-      const { tokens } = await authApi.register(values);
+      const {
+        data: { tokens },
+      } = await authApi.register(values);
       session.setAccessToken(tokens.accessToken);
+      session.setAuthCookie();
       router.push("/dashboard");
     } catch (error) {
       const message =
