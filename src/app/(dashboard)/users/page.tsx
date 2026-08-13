@@ -14,11 +14,16 @@ import {
 } from "@/components/ui/Table";
 import { Button } from "@/components/ui/Button";
 
-const ROLE_TONE = {
-  super_admin: "brand",
-  company_admin: "warning",
-  member: "neutral",
-} as const;
+const SYSTEM_ROLE_TONE: Record<number, "brand" | "warning" | "neutral"> = {
+  1: "brand",
+  2: "warning",
+};
+
+function getSystemRoleLabel(systemRoleId: number) {
+  if (systemRoleId === 1) return "Super Administrator";
+  if (systemRoleId === 2) return "Company Administrator";
+  return "User";
+}
 
 export default function UsersPage() {
   const [selectedCompanyId, setSelectedCompanyId] = useState("");
@@ -152,11 +157,13 @@ export default function UsersPage() {
               </TableCell>
               <TableCell>{user.email}</TableCell>
               <TableCell>
-                <Badge tone={ROLE_TONE[user.role]}>{user.role}</Badge>
+                <Badge tone={SYSTEM_ROLE_TONE[user.systemRoleId] ?? "neutral"}>
+                  {getSystemRoleLabel(user.systemRoleId)}
+                </Badge>
               </TableCell>
               <TableCell>
-                <Badge tone={user.isActive ? "success" : "neutral"}>
-                  {user.isActive ? "Active" : "Inactive"}
+                <Badge tone={user.status === "ACTIVE" ? "success" : "neutral"}>
+                  {user.status}
                 </Badge>
               </TableCell>
               <TableCell>{user.lastLoginAt ?? "Never"}</TableCell>

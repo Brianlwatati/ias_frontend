@@ -1,11 +1,5 @@
 import type { AuthUser } from "./auth";
 
-export interface ManagedUser extends AuthUser {
-  createdAt: string;
-  updatedAt: string;
-  lastLoginAt?: string | null;
-}
-
 export interface CreateUserPayload {
   email: string;
   password: string;
@@ -13,6 +7,20 @@ export interface CreateUserPayload {
   lastName: string;
   role: AuthUser["role"];
   companyId?: string;
+}
+
+export interface ManagedUser {
+  id: number;
+  companyId: number;
+  email: string;
+  systemRoleId: number;
+  firstName: string;
+  lastName: string;
+  status: "ACTIVE" | "INACTIVE" | "PENDING";
+  emailVerifiedAt?: string | null;
+  lastLoginAt?: string | null;
+  createdAt: string;
+  updatedAt?: string | null;
 }
 
 export interface UpdateUserPayload extends Partial<
