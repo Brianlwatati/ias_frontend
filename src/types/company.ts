@@ -1,24 +1,17 @@
-export interface CompanyAdminPayload {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-}
+export type CompanyStatus = "ACTIVE" | "INACTIVE" | "SUSPENDED";
 
 export interface CreateCompanyPayload {
   name: string;
   code: string;
-  productCodes: string[];
-  admin: CompanyAdminPayload;
   email: string;
   phone: string;
 }
 
 export interface Company {
-  id: string;
+  id: number | string;
   name: string;
   code: string;
-  status: string;
+  status: CompanyStatus;
   createdAt: string;
   updatedAt: string;
   email: string;
@@ -26,5 +19,5 @@ export interface Company {
 }
 
 export interface UpdateCompanyPayload extends Partial<CreateCompanyPayload> {
-  status?: string;
+  status?: CompanyStatus;
 }

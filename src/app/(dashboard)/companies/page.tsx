@@ -1,7 +1,10 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { companiesApi } from "@/lib/api/companies";
+import { productsApi } from "@/lib/api/products";
 import { Badge } from "@/components/ui/Badge";
 import {
   Table,
@@ -14,10 +17,52 @@ import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 
 export default function CompaniesPage() {
+  const queryClient = useQueryClient();
+  const [selectedProductIds, setSelectedProductIds] = useState<
+    Record<string, string>
+  >({});
+
   const { data, isLoading, isError } = useQuery({
     queryKey: ["companies"],
     queryFn: () => companiesApi.list({ page: 1, pageSize: 25 }),
   });
+
+  const { data: productsData } = useQuery({
+    queryKey: ["products"],
+    queryFn: () => productsApi.list({ page: 1, pageSize: 100 }),
+  });
+
+  const products = useMemo(() => productsData?.data ?? [], [productsData]);
+
+  const { mutate: assignProduct, isPending } = useMutation({
+    mutationFn: ({
+      companyId,
+      productId,
+    }: {
+      companyId: string | number;
+      productId: string | number;
+    }) => companiesApi.assignProduct(companyId, productId),
+    onSuccess: () => {
+      toast.success("Product assigned to company");
+      queryClient.invalidateQueries({ queryKey: ["companies"] });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
+    onError: () => {
+      toast.error("Could not assign product to company");
+    },
+  });
+
+  const handleAssign = (
+    companyId: string | number,
+    productId: string | number,
+  ) => {
+    if (!productId) {
+      toast.error("Please select a product first");
+      return;
+    }
+
+    assignProduct({ companyId, productId });
+  };
 
   return (
     <div className="space-y-6">
@@ -41,6 +86,8 @@ export default function CompaniesPage() {
             <TableCell header>Status</TableCell>
             <TableCell header>Email</TableCell>
             <TableCell header>Phone</TableCell>
+            <TableCell header>Assign product</TableCell>
+            <TableCell header>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -65,13 +112,67 @@ export default function CompaniesPage() {
 
               <TableCell>
                 <Badge
-                  tone={company.status === "ACTIVE" ? "success" : "neutral"}
+                  tone={
+                    company.status === "ACTIVE"
+                      ? "success"
+                      : company.status === "SUSPENDED"
+                        ? "warning"
+                        : "neutral"
+                  }
                 >
-                  {company.status === "ACTIVE" ? "Active" : "Inactive"}
+                  {company.status}
                 </Badge>
               </TableCell>
               <TableCell>{company.email ?? "—"}</TableCell>
               <TableCell>{company.phone ?? "—"}</TableCell>
+              <TableCell>
+                <div className="flex items-center gap-2">
+                  <select
+                    className="input h-9 min-w-[140px] px-2 py-1"
+                    value={selectedProductIds[String(company.id)] ?? ""}
+                    onChange={(e) =>
+                      setSelectedProductIds((prev) => ({
+                        ...prev,
+                        [String(company.id)]: e.target.value,
+                      }))
+                    }
+                  >
+                    <option value="">Select product</option>
+                    {products.map((product) => (
+                      <option key={product.id} value={String(product.id)}>
+                        {product.name}
+                      </option>
+                    ))}
+                  </select>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className="px-3 py-1.5 text-xs"
+                    disabled={
+                      isPending || !selectedProductIds[String(company.id)]
+                    }
+                    onClick={() =>
+                      handleAssign(
+                        company.id,
+                        selectedProductIds[String(company.id)] ?? "",
+                      )
+                    }
+                  >
+                    Assign
+                  </Button>
+                </div>
+              </TableCell>
+              <TableCell>
+                <Link href={`/companies/${company.id}/edit`}>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    className="px-3 py-1.5 text-xs"
+                  >
+                    Edit
+                  </Button>
+                </Link>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

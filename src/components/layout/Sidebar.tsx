@@ -6,6 +6,7 @@ import {
   Building2,
   LayoutDashboard,
   Package,
+  ReceiptText,
   ShieldCheck,
   Users,
 } from "lucide-react";
@@ -15,6 +16,7 @@ const NAV_ITEMS = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { href: "/companies", label: "Companies", icon: Building2 },
   { href: "/products", label: "Products", icon: Package },
+  { href: "/subscriptions", label: "Subscriptions", icon: ReceiptText },
   { href: "/roles", label: "Roles", icon: ShieldCheck },
   { href: "/users", label: "Users", icon: Users },
 ];

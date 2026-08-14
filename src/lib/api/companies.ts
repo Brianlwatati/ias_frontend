@@ -1,25 +1,49 @@
-import { apiClient } from "./client";
+import { apiClient, unwrap, unwrapList } from "./client";
 import type {
   Company,
   CreateCompanyPayload,
   UpdateCompanyPayload,
 } from "@/types/company";
-import type { PaginatedResponse } from "@/types/api";
+import type { ApiEnvelope, PaginatedResponse } from "@/types/api";
+import type { CompanyProduct } from "@/types/company-product";
 
 export const companiesApi = {
   list: (params?: { page?: number; pageSize?: number; search?: string }) =>
-    apiClient
-      .get<PaginatedResponse<Company>>("/companies", { params })
-      .then((r) => r.data),
+    unwrapList<Company>(
+      apiClient.get<ApiEnvelope<PaginatedResponse<Company>>>("/companies", {
+        params,
+      }),
+    ),
 
   get: (id: string) =>
-    apiClient.get<Company>(`/companies/${id}`).then((r) => r.data),
+    unwrap<Company>(apiClient.get<ApiEnvelope<Company>>(`/companies/${id}`)),
+
+  getCompanyProducts: (companyId: number | string) =>
+    apiClient
+      .get<
+        ApiEnvelope<CompanyProduct[]>
+      >(`/companies/${companyId}/companyproducts`)
+      .then((response) => response.data.data),
 
   create: (payload: CreateCompanyPayload) =>
-    apiClient.post<Company>("/companies", payload).then((r) => r.data),
+    unwrap<Company>(
+      apiClient.post<ApiEnvelope<Company>>("/companies", payload),
+    ),
 
   update: (id: string, payload: UpdateCompanyPayload) =>
-    apiClient.patch<Company>(`/companies/${id}`, payload).then((r) => r.data),
+    unwrap<Company>(
+      apiClient.patch<ApiEnvelope<Company>>(`/companies/${id}`, payload),
+    ),
+
+  assignProduct: (companyId: number | string, productId: number | string) =>
+    unwrap<unknown>(
+      apiClient.post<ApiEnvelope<unknown>>(
+        `/companies/${companyId}/companyproducts`,
+        {
+          productId,
+        },
+      ),
+    ),
 
   remove: (id: string) =>
     apiClient.delete(`/companies/${id}`).then((r) => r.data),
