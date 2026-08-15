@@ -154,26 +154,29 @@ export const TransactionReceipt = forwardRef<
                 {transaction.paymentMethod ?? "—"}
               </td>
             </tr>
-            <tr className="border-b border-slate-200">
+            {/* <tr className="border-b border-slate-200">
               <td className="px-4 py-3 text-slate-600">External ID</td>
               <td className="px-4 py-3 text-slate-900">
                 {transaction.externalTransactionId ?? "—"}
               </td>
-            </tr>
+            </tr> */}
             {transaction.subscription && (
               <>
-                <tr className="border-b border-slate-200">
-                  <td className="px-4 py-3 text-slate-600">Subscription</td>
+                <tr className="border-t border-slate-200">
+                  <td className="px-4 py-3 text-slate-600">Product Name</td>
                   <td className="px-4 py-3 text-slate-900">
                     {transaction.subscription.productName}
                   </td>
                 </tr>
-                <tr className="border-b border-slate-200">
+                <tr className="border-t border-slate-200">
                   <td className="px-4 py-3 text-slate-600">
-                    Subscription status
+                    Subscription Duration
                   </td>
                   <td className="px-4 py-3 text-slate-900">
-                    {transaction.subscription.status}
+                    {transaction.subscription.startsAt &&
+                    transaction.subscription.endsAt
+                      ? `${formatDate(transaction.subscription.startsAt)} - ${formatDate(transaction.subscription.endsAt)}`
+                      : "—"}
                   </td>
                 </tr>
               </>

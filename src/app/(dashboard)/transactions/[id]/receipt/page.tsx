@@ -9,6 +9,7 @@ import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { Button } from "@/components/ui/Button";
 import { TransactionReceipt } from "@/components/transactions/TransactionReceipt";
+import { TransactionReceiptAlt } from "@/components/transactions/TransactionReceipttwo";
 import { useAuth } from "@/hooks/useAuth";
 import { companiesApi } from "@/lib/api/companies";
 import { transactionsApi } from "@/lib/api/transactions";
@@ -125,7 +126,7 @@ export default function TransactionReceiptPage() {
 
       <div className="flex justify-center">
         <div className="w-full max-w-[860px]">
-          <TransactionReceipt
+          <TransactionReceiptAlt
             ref={receiptRef}
             transaction={transaction}
             user={user}
