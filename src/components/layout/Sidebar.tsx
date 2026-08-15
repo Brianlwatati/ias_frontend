@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Building2,
+  DollarSign,
   LayoutDashboard,
   Package,
   ReceiptText,
@@ -17,6 +18,7 @@ const NAV_ITEMS = [
   { href: "/companies", label: "Companies", icon: Building2 },
   { href: "/products", label: "Products", icon: Package },
   { href: "/subscriptions", label: "Subscriptions", icon: ReceiptText },
+  { href: "/transactions", label: "Transactions", icon: DollarSign },
   { href: "/roles", label: "Roles", icon: ShieldCheck },
   { href: "/users", label: "Users", icon: Users },
 ];

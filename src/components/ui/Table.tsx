@@ -8,7 +8,12 @@ export function Table({
   className?: string;
 }) {
   return (
-    <div className={cn("overflow-x-auto rounded-xl border border-surface-border", className)}>
+    <div
+      className={cn(
+        "overflow-x-auto rounded-xl border border-surface-border",
+        className,
+      )}
+    >
       <table className="w-full text-left text-sm">{children}</table>
     </div>
   );
@@ -33,10 +38,18 @@ export function TableRow({ children }: { children: React.ReactNode }) {
 export function TableCell({
   children,
   header = false,
+  colSpan,
+  className,
 }: {
   children: React.ReactNode;
   header?: boolean;
+  colSpan?: number;
+  className?: string;
 }) {
   const Tag = header ? "th" : "td";
-  return <Tag className="px-4 py-3 align-middle">{children}</Tag>;
+  return (
+    <Tag colSpan={colSpan} className={cn("px-4 py-3 align-middle", className)}>
+      {children}
+    </Tag>
+  );
 }
