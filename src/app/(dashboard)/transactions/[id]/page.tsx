@@ -9,8 +9,9 @@ import { z } from "zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { transactionsApi } from "@/lib/api/transactions";
-import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { TransactionDetailsCard } from "@/components/transactions/TransactionDetailsCard";
+import { TransactionStatusForm } from "@/components/transactions/TransactionStatusForm";
 import type { ApiError } from "@/types/api";
 
 const transactionTypeColorMap: Record<
@@ -153,286 +154,56 @@ export default function TransactionDetailPage() {
   }
 
   return (
-    <div className="w-full space-y-6">
-      <Link
-        href={`/transactions?companyId=${companyId}`}
-        className="inline-flex items-center gap-2 text-sm text-slate-400 transition-colors hover:text-slate-300"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back to transactions
-      </Link>
+    <>
+      <div className="mb-5 flex items-center justify-between gap-3">
+        <Link
+          href={`/transactions?companyId=${companyId}`}
+          className="inline-flex items-center gap-2 text-sm text-slate-400 transition-colors hover:text-slate-300"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to transactions
+        </Link>
 
-      <div>
-        <h1 className="text-xl font-semibold text-slate-100">
-          {transaction.transactionReference}
-        </h1>
-        <p className="mt-1 text-sm text-slate-400">
-          Manage transaction details and status.
-        </p>
+        <Link
+          href={`/transactions/${transactionId}/receipt?companyId=${companyId}`}
+          className="inline-flex items-center"
+        >
+          <Button type="button" variant="secondary">
+            View receipt
+          </Button>
+        </Link>
       </div>
 
-      <div className="card space-y-6 w-full">
-        {/* Transaction Details */}
-        <div className="space-y-4">
-          <h2 className="text-sm font-semibold text-slate-200">Details</h2>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                Type
-              </label>
-              <div className="mt-2">
-                <Badge
-                  tone={transactionTypeColorMap[transaction.transactionType]}
-                >
-                  {transaction.transactionType}
-                </Badge>
-              </div>
-            </div>
-
-            <div>
-              <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                Amount
-              </label>
-              <p className="mt-2 text-lg font-semibold text-slate-100">
-                {formatCurrency(transaction.amount, transaction.currency)}
-              </p>
-            </div>
-
-            <div>
-              <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                Status
-              </label>
-              <div className="mt-2">
-                <Badge tone={statusColorMap[transaction.status]}>
-                  {transaction.status}
-                </Badge>
-              </div>
-            </div>
-
-            <div>
-              <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                Transaction Date
-              </label>
-              <p className="mt-2 text-sm text-slate-300">
-                {formatDate(transaction.transactionDate)}
-              </p>
-            </div>
-
-            {transaction.paymentMethod && (
-              <div>
-                <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                  Payment Method
-                </label>
-                <p className="mt-2 text-sm text-slate-300">
-                  {transaction.paymentMethod}
-                </p>
-              </div>
-            )}
-
-            {transaction.externalTransactionId && (
-              <div>
-                <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                  External ID
-                </label>
-                <p className="mt-2 font-mono text-sm text-slate-300">
-                  {transaction.externalTransactionId}
-                </p>
-              </div>
-            )}
-
-            <div>
-              <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                Created
-              </label>
-              <p className="mt-2 text-sm text-slate-300">
-                {formatDate(transaction.createdAt)}
-              </p>
-            </div>
-
-            <div>
-              <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                Updated
-              </label>
-              <p className="mt-2 text-sm text-slate-300">
-                {formatDate(transaction.updatedAt)}
-              </p>
-            </div>
-          </div>
-
-          {transaction.notes && (
-            <div>
-              <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                Notes
-              </label>
-              <p className="mt-2 text-sm text-slate-300">{transaction.notes}</p>
-            </div>
-          )}
+      <div className="mt-8 w-full space-y-6">
+        <div>
+          <h1 className="text-xl font-semibold text-slate-100">
+            {transaction.transactionReference}
+          </h1>
+          <p className="mt-1 text-sm text-slate-400">
+            Manage transaction details and status.
+          </p>
         </div>
 
-        {/* Subscription Details */}
-        {transaction.subscription && (
-          <>
-            <hr className="border-surface-border" />
-
-            <div className="space-y-4">
-              <h2 className="text-sm font-semibold text-slate-200">
-                Associated Subscription
-              </h2>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                    Company
-                  </label>
-                  <p className="mt-2 text-sm text-slate-300">
-                    {transaction.subscription.companyName}
-                  </p>
-                </div>
-
-                <div>
-                  <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                    Company Code
-                  </label>
-                  <p className="mt-2 font-mono text-sm text-slate-300">
-                    {transaction.subscription.companyCode}
-                  </p>
-                </div>
-
-                <div>
-                  <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                    Product
-                  </label>
-                  <p className="mt-2 text-sm text-slate-300">
-                    {transaction.subscription.productName}
-                  </p>
-                </div>
-
-                <div>
-                  <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                    Product Code
-                  </label>
-                  <p className="mt-2 font-mono text-sm text-slate-300">
-                    {transaction.subscription.productCode}
-                  </p>
-                </div>
-
-                <div>
-                  <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                    Subscription Amount
-                  </label>
-                  <p className="mt-2 text-sm text-slate-300">
-                    {formatCurrency(
-                      transaction.subscription.amount,
-                      transaction.subscription.currency,
-                    )}
-                  </p>
-                </div>
-
-                <div>
-                  <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                    Subscription Status
-                  </label>
-                  <div className="mt-2">
-                    <Badge tone="info">{transaction.subscription.status}</Badge>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                    Payment Status
-                  </label>
-                  <div className="mt-2">
-                    <Badge tone="info">
-                      {transaction.subscription.paymentStatus}
-                    </Badge>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                    Auto Renew
-                  </label>
-                  <p className="mt-2 text-sm text-slate-300">
-                    {transaction.subscription.autoRenew ? "Yes" : "No"}
-                  </p>
-                </div>
-
-                <div>
-                  <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                    Starts At
-                  </label>
-                  <p className="mt-2 text-sm text-slate-300">
-                    {formatDate(transaction.subscription.startsAt)}
-                  </p>
-                </div>
-
-                <div>
-                  <label className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                    Ends At
-                  </label>
-                  <p className="mt-2 text-sm text-slate-300">
-                    {formatDate(transaction.subscription.endsAt)}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
+        <TransactionDetailsCard
+          transaction={transaction}
+          statusColorMap={statusColorMap}
+          transactionTypeColorMap={transactionTypeColorMap}
+          formatCurrency={formatCurrency}
+          formatDate={formatDate}
+        />
 
         <hr className="border-surface-border" />
 
-        {/* Status Update Form */}
-        <form
+        <TransactionStatusForm
+          register={register}
+          errors={errors}
+          currentStatus={currentStatus}
+          statusColorMap={statusColorMap}
+          isPending={isPending}
+          companyId={companyId}
           onSubmit={handleSubmit((values) => mutate(values))}
-          className="space-y-4"
-        >
-          <h2 className="text-sm font-semibold text-slate-200">
-            Update Status
-          </h2>
-
-          <div>
-            <label
-              htmlFor="status"
-              className="text-sm font-medium text-slate-300"
-            >
-              Status
-            </label>
-            <div className="mt-2 flex items-center gap-3">
-              <select
-                id="status"
-                className="input flex-1"
-                {...register("status")}
-              >
-                <option value="PENDING">Pending</option>
-                <option value="SUCCESS">Success</option>
-                <option value="FAILED">Failed</option>
-                <option value="CANCELLED">Cancelled</option>
-                <option value="REFUNDED">Refunded</option>
-              </select>
-              <Badge tone={statusColorMap[currentStatus]}>
-                {currentStatus}
-              </Badge>
-            </div>
-            {errors.status && (
-              <p className="mt-1 text-xs text-red-400">
-                {errors.status.message}
-              </p>
-            )}
-          </div>
-
-          <div className="flex gap-3 pt-2">
-            <Button type="submit" disabled={isPending}>
-              {isPending ? "Updating..." : "Update Status"}
-            </Button>
-            <Link href={`/transactions?companyId=${companyId}`}>
-              <Button type="button" variant="secondary">
-                Cancel
-              </Button>
-            </Link>
-          </div>
-        </form>
+        />
       </div>
-    </div>
+    </>
   );
 }
