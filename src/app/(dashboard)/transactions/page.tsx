@@ -15,23 +15,27 @@ import {
   TableCell,
 } from "@/components/ui/Table";
 
-const statusColorMap: Record<string, "success" | "warning" | "error" | "info"> =
-  {
-    PENDING: "warning",
-    COMPLETED: "success",
-    FAILED: "error",
-    CANCELLED: "error",
-  };
+const statusColorMap: Record<
+  string,
+  "success" | "warning" | "danger" | "neutral" | "brand"
+> = {
+  PENDING: "warning",
+  COMPLETED: "success",
+  FAILED: "danger",
+  CANCELLED: "danger",
+  SUCCESS: "success",
+  REFUNDED: "warning",
+};
 
 const transactionTypeColorMap: Record<
   string,
-  "success" | "warning" | "error" | "info"
+  "success" | "warning" | "danger" | "neutral" | "brand"
 > = {
-  PAYMENT: "info",
+  PAYMENT: "brand",
   REFUND: "warning",
   CREDIT: "success",
-  DEBIT: "error",
-  ADJUSTMENT: "info",
+  DEBIT: "danger",
+  ADJUSTMENT: "brand",
 };
 
 export default function TransactionsPage() {
@@ -155,37 +159,43 @@ export default function TransactionsPage() {
               </TableRow>
             ) : (
               transactions.map((transaction) => (
-                <TableRow key={transaction.id}>
-                  <TableCell className="font-mono text-sm">
-                    {transaction.transactionReference}
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      color={
-                        transactionTypeColorMap[transaction.transactionType]
-                      }
-                    >
-                      {transaction.transactionType}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {formatCurrency(transaction.amount, transaction.currency)}
-                  </TableCell>
-                  <TableCell>
-                    <Badge color={statusColorMap[transaction.status]}>
-                      {transaction.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-sm text-slate-300">
-                    {transaction.paymentMethod || "-"}
-                  </TableCell>
-                  <TableCell className="text-sm text-slate-300">
-                    {formatDate(transaction.transactionDate)}
-                  </TableCell>
-                  <TableCell className="max-w-xs truncate text-sm text-slate-300">
-                    {transaction.notes || "-"}
-                  </TableCell>
-                </TableRow>
+                <Link
+                  key={transaction.id}
+                  href={`/transactions/${transaction.id}?companyId=${selectedCompanyId}`}
+                  className="contents"
+                >
+                  <TableRow>
+                    <TableCell className="font-mono text-sm">
+                      {transaction.transactionReference}
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        tone={
+                          transactionTypeColorMap[transaction.transactionType]
+                        }
+                      >
+                        {transaction.transactionType}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {formatCurrency(transaction.amount, transaction.currency)}
+                    </TableCell>
+                    <TableCell>
+                      <Badge tone={statusColorMap[transaction.status]}>
+                        {transaction.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-sm text-slate-300">
+                      {transaction.paymentMethod || "-"}
+                    </TableCell>
+                    <TableCell className="text-sm text-slate-300">
+                      {formatDate(transaction.transactionDate)}
+                    </TableCell>
+                    <TableCell className="max-w-xs truncate text-sm text-slate-300">
+                      {transaction.notes || "-"}
+                    </TableCell>
+                  </TableRow>
+                </Link>
               ))
             )}
           </TableBody>

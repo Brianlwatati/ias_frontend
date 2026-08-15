@@ -73,10 +73,9 @@ export default function NewTransactionPage() {
         transactionType: values.transactionType,
         amount: values.amount,
         currency: values.currency,
-        subscriptionId:
-          values.subscriptionId && values.subscriptionId !== ""
-            ? Number(values.subscriptionId)
-            : undefined,
+        subscriptionId: values.subscriptionId
+          ? Number(values.subscriptionId)
+          : undefined,
         paymentMethod: values.paymentMethod || undefined,
         externalTransactionId: values.externalTransactionId || undefined,
         notes: values.notes || undefined,

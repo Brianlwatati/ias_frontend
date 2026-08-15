@@ -3,6 +3,7 @@ import type {
   Transaction,
   CreateTransactionInput,
   UpdateTransactionPayload,
+  UpdateTransactionStatusInput,
 } from "@/types/transaction";
 import type { ApiEnvelope, PaginatedResponse } from "@/types/api";
 
@@ -47,4 +48,16 @@ export const transactionsApi = {
 
   remove: (companyId: number | string, id: number | string) =>
     apiClient.delete(`/companies/${companyId}/transactions/${id}`),
+
+  updateStatus: (
+    companyId: number | string,
+    id: number | string,
+    payload: UpdateTransactionStatusInput,
+  ) =>
+    unwrap<Transaction>(
+      apiClient.patch<ApiEnvelope<Transaction>>(
+        `/companies/${companyId}/transactions/${id}/status`,
+        payload,
+      ),
+    ),
 };

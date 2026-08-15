@@ -1,3 +1,5 @@
+import type { Subscription } from "./subscription";
+
 export type TransactionType =
   | "PAYMENT"
   | "REFUND"
@@ -8,7 +10,9 @@ export type TransactionStatus =
   | "PENDING"
   | "COMPLETED"
   | "FAILED"
-  | "CANCELLED";
+  | "CANCELLED"
+  | "SUCCESS"
+  | "REFUNDED";
 
 export interface Transaction {
   id: number;
@@ -25,6 +29,7 @@ export interface Transaction {
   notes?: string;
   createdAt: string;
   updatedAt: string;
+  subscription?: Subscription;
 }
 
 export type CreateTransactionInput = {
@@ -40,3 +45,7 @@ export type CreateTransactionInput = {
 export interface UpdateTransactionPayload extends Partial<CreateTransactionInput> {
   status?: TransactionStatus;
 }
+
+export type UpdateTransactionStatusInput = {
+  status: "PENDING" | "CANCELLED" | "SUCCESS" | "FAILED" | "REFUNDED";
+};
