@@ -4,13 +4,13 @@ import type {
   CreateCompanyPayload,
   UpdateCompanyPayload,
 } from "@/types/company";
-import type { ApiEnvelope, PaginatedResponse } from "@/types/api";
+import type { ApiEnvelope, ListEnvelope } from "@/types/api";
 import type { CompanyProduct } from "@/types/company-product";
 
 export const companiesApi = {
   list: (params?: { page?: number; pageSize?: number; search?: string }) =>
     unwrapList<Company>(
-      apiClient.get<ApiEnvelope<PaginatedResponse<Company>>>("/companies", {
+      apiClient.get<ListEnvelope<Company>>("/companies", {
         params,
       }),
     ),

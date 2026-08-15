@@ -118,56 +118,68 @@ export default function SubscriptionsPage() {
               </TableRow>
             )}
             {data?.data.map((subscription) => (
-              <TableRow key={subscription.id}>
-                <TableCell>
-                  <div>
-                    <div className="font-medium text-slate-100">
-                      {subscription.productName}
+              <Link
+                key={subscription.id}
+                href={`/subscriptions/${subscription.id}?companyId=${selectedCompanyId}`}
+                className="contents"
+              >
+                <TableRow>
+                  <TableCell>
+                    <div>
+                      <div className="font-medium text-slate-100">
+                        {subscription.productName}
+                      </div>
+                      <div className="text-xs text-slate-400">
+                        {subscription.productCode}
+                      </div>
                     </div>
-                    <div className="text-xs text-slate-400">
-                      {subscription.productCode}
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      tone={
+                        subscription.status === "ACTIVE"
+                          ? "success"
+                          : subscription.status === "PENDING"
+                            ? "brand"
+                            : subscription.status === "CANCELLED"
+                              ? "neutral"
+                              : subscription.status === "PAST_DUE"
+                                ? "warning"
+                                : subscription.status === "SUSPENDED"
+                                  ? "danger"
+                                  : "neutral"
+                      }
+                    >
+                      {subscription.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    {subscription.amount} {subscription.currency}
+                  </TableCell>
+                  <TableCell>
+                    <div className="text-xs text-slate-300">
+                      {new Date(subscription.startsAt).toLocaleDateString()} -{" "}
+                      {new Date(subscription.endsAt).toLocaleDateString()}
                     </div>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <Badge
-                    tone={
-                      subscription.status === "ACTIVE"
-                        ? "success"
-                        : subscription.status === "PENDING"
-                          ? "brand"
-                          : subscription.status === "CANCELLED"
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      tone={
+                        subscription.paymentStatus === "PAID"
+                          ? "success"
+                          : subscription.paymentStatus === "UNPAID"
                             ? "neutral"
-                            : "warning"
-                    }
-                  >
-                    {subscription.status}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  {subscription.amount} {subscription.currency}
-                </TableCell>
-                <TableCell>
-                  <div className="text-xs text-slate-300">
-                    {new Date(subscription.startsAt).toLocaleDateString()} -{" "}
-                    {new Date(subscription.endsAt).toLocaleDateString()}
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <Badge
-                    tone={
-                      subscription.paymentStatus === "PAID"
-                        ? "success"
-                        : subscription.paymentStatus === "UNPAID"
-                          ? "neutral"
-                          : "warning"
-                    }
-                  >
-                    {subscription.paymentStatus}
-                  </Badge>
-                </TableCell>
-                <TableCell>{subscription.autoRenew ? "Yes" : "No"}</TableCell>
-              </TableRow>
+                            : subscription.paymentStatus === "PARTIALLY_PAID"
+                              ? "warning"
+                              : "brand"
+                      }
+                    >
+                      {subscription.paymentStatus}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{subscription.autoRenew ? "Yes" : "No"}</TableCell>
+                </TableRow>
+              </Link>
             ))}
           </TableBody>
         </Table>

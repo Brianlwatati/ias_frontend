@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
@@ -31,7 +32,7 @@ const statusUpdateSchema = z.object({
 
 type StatusUpdateForm = z.infer<typeof statusUpdateSchema>;
 
-export default function TransactionDetailPage() {
+function TransactionDetailContent() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
@@ -205,5 +206,13 @@ export default function TransactionDetailPage() {
         />
       </div>
     </>
+  );
+}
+
+export default function TransactionDetailPage() {
+  return (
+    <Suspense fallback={<div className="max-w-2xl space-y-6" />}>
+      <TransactionDetailContent />
+    </Suspense>
   );
 }

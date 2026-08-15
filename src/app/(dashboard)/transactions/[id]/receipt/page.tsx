@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { Suspense, useRef } from "react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
@@ -8,13 +8,14 @@ import { useQuery } from "@tanstack/react-query";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { Button } from "@/components/ui/Button";
-import { TransactionReceipt } from "@/components/transactions/TransactionReceipt";
+// import { TransactionReceipt } from "@/components/transactions/TransactionReceipt";
+import { TransactionReceiptTwo } from "@/components/transactions/TransactionReceiptFour";
 import { TransactionReceiptAlt } from "@/components/transactions/TransactionReceipttwo";
 import { useAuth } from "@/hooks/useAuth";
 import { companiesApi } from "@/lib/api/companies";
 import { transactionsApi } from "@/lib/api/transactions";
 
-export default function TransactionReceiptPage() {
+function TransactionReceiptContent() {
   const params = useParams();
   const searchParams = useSearchParams();
   const transactionId = params.id as string;
@@ -126,7 +127,7 @@ export default function TransactionReceiptPage() {
 
       <div className="flex justify-center">
         <div className="w-full max-w-[860px]">
-          <TransactionReceiptAlt
+          <TransactionReceiptTwo
             ref={receiptRef}
             transaction={transaction}
             user={user}
@@ -138,5 +139,13 @@ export default function TransactionReceiptPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function TransactionReceiptPage() {
+  return (
+    <Suspense fallback={<div className="max-w-full space-y-6" />}>
+      <TransactionReceiptContent />
+    </Suspense>
   );
 }

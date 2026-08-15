@@ -1,15 +1,16 @@
 export type SubscriptionStatus =
   | "PENDING"
   | "ACTIVE"
-  | "EXPIRED"
+  | "PAST_DUE"
+  | "SUSPENDED"
   | "CANCELLED"
-  | "SUSPENDED";
+  | "EXPIRED";
 
 export type SubscriptionPaymentStatus =
   | "UNPAID"
+  | "PARTIALLY_PAID"
   | "PAID"
-  | "OVERDUE"
-  | "FAILED";
+  | "OVERPAID";
 
 export interface Subscription {
   id: number;

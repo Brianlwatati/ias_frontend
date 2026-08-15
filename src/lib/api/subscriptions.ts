@@ -3,8 +3,10 @@ import type {
   Subscription,
   CreateSubscriptionPayload,
   UpdateSubscriptionPayload,
+  SubscriptionPaymentStatus,
+  SubscriptionStatus,
 } from "@/types/subscription";
-import type { ApiEnvelope, PaginatedResponse } from "@/types/api";
+import type { ApiEnvelope, ListEnvelope } from "@/types/api";
 
 export const subscriptionsApi = {
   list: (
@@ -12,7 +14,7 @@ export const subscriptionsApi = {
     params?: { page?: number; pageSize?: number },
   ) =>
     unwrapList<Subscription>(
-      apiClient.get<ApiEnvelope<PaginatedResponse<Subscription>>>(
+      apiClient.get<ListEnvelope<Subscription>>(
         `/companies/${companyId}/subscriptions`,
         { params },
       ),
@@ -41,6 +43,21 @@ export const subscriptionsApi = {
     unwrap<Subscription>(
       apiClient.patch<ApiEnvelope<Subscription>>(
         `/companies/${companyId}/subscriptions/${id}`,
+        payload,
+      ),
+    ),
+
+  updateStatusAndPaymentStatus: (
+    companyId: number | string,
+    id: number | string,
+    payload: {
+      paymentStatus: SubscriptionPaymentStatus;
+      status: SubscriptionStatus;
+    },
+  ) =>
+    unwrap<Subscription>(
+      apiClient.patch<ApiEnvelope<Subscription>>(
+        `/companies/${companyId}/subscriptions/${id}/status-and-payment-status`,
         payload,
       ),
     ),

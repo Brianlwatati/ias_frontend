@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { companiesApi } from "@/lib/api/companies";
@@ -39,7 +40,7 @@ export default function UsersPage() {
     if (!companies || companies.length === 0) {
       return;
     }
-    setSelectedCompanyId((current) => current || companies[0]?.id || "");
+    setSelectedCompanyId((current) => current || String(companies[0]?.id ?? ""));
   }, [companiesData]);
 
   const {
@@ -54,7 +55,7 @@ export default function UsersPage() {
   });
 
   const selectedCompany = companiesData?.data.find(
-    (company) => company.id === selectedCompanyId,
+    (company) => String(company.id) === selectedCompanyId,
   );
 
   return (
@@ -86,7 +87,9 @@ export default function UsersPage() {
           </select>
         </div>
 
-        <Button disabled={!selectedCompanyId}>Invite user</Button>
+        <Link href={selectedCompanyId ? `/users/new?companyId=${selectedCompanyId}` : "#"}>
+          <Button disabled={!selectedCompanyId}>Invite user</Button>
+        </Link>
       </div>
 
       {selectedCompany && (

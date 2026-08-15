@@ -39,14 +39,6 @@ export default function EditCompanyPage() {
         ? (params.id[0] ?? "")
         : "";
 
-  if (!companyId) {
-    return (
-      <div className="max-w-2xl space-y-6">
-        <p className="text-danger">Company id is missing.</p>
-      </div>
-    );
-  }
-
   const { data: company, isLoading } = useQuery({
     queryKey: ["company", companyId],
     queryFn: () => companiesApi.get(companyId),
@@ -100,6 +92,14 @@ export default function EditCompanyPage() {
 
   function onSubmit(values: CompanyEditForm) {
     mutate(values);
+  }
+
+  if (!companyId) {
+    return (
+      <div className="max-w-2xl space-y-6">
+        <p className="text-danger">Company id is missing.</p>
+      </div>
+    );
   }
 
   if (isLoading || !company) {

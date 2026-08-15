@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
@@ -26,7 +27,7 @@ const subscriptionSchema = z.object({
 
 type SubscriptionForm = z.infer<typeof subscriptionSchema>;
 
-export default function NewSubscriptionPage() {
+function NewSubscriptionForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const companyId = searchParams.get("companyId") ?? "";
@@ -238,5 +239,13 @@ export default function NewSubscriptionPage() {
         </div>
       </form>
     </div>
+  );
+}
+
+export default function NewSubscriptionPage() {
+  return (
+    <Suspense fallback={<div className="max-full space-y-6" />}>
+      <NewSubscriptionForm />
+    </Suspense>
   );
 }

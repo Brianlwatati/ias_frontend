@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
@@ -35,7 +36,7 @@ const transactionSchema = z.object({
 
 type TransactionForm = z.infer<typeof transactionSchema>;
 
-export default function NewTransactionPage() {
+function NewTransactionForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const companyId = searchParams.get("companyId") ?? "";
@@ -321,5 +322,13 @@ export default function NewTransactionPage() {
         </div>
       </form>
     </div>
+  );
+}
+
+export default function NewTransactionPage() {
+  return (
+    <Suspense fallback={<div className="max-w-2xl space-y-6" />}>
+      <NewTransactionForm />
+    </Suspense>
   );
 }

@@ -5,7 +5,7 @@ import type {
   UpdateTransactionPayload,
   UpdateTransactionStatusInput,
 } from "@/types/transaction";
-import type { ApiEnvelope, PaginatedResponse } from "@/types/api";
+import type { ApiEnvelope, ListEnvelope } from "@/types/api";
 
 export const transactionsApi = {
   list: (
@@ -13,7 +13,7 @@ export const transactionsApi = {
     params?: { page?: number; pageSize?: number },
   ) =>
     unwrapList<Transaction>(
-      apiClient.get<ApiEnvelope<PaginatedResponse<Transaction>>>(
+      apiClient.get<ListEnvelope<Transaction>>(
         `/companies/${companyId}/transactions`,
         { params },
       ),
