@@ -13,7 +13,8 @@ import { subscriptionsApi } from "@/lib/api/subscriptions";
 import { transactionsApi } from "@/lib/api/transactions";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import type { ApiError } from "@/types/api";
+import type { ApiError, PaginatedResponse } from "@/types/api";
+import type { Subscription } from "@/types/subscription";
 import type { CreateTransactionInput } from "@/types/transaction";
 
 const transactionSchema = z.object({
@@ -44,11 +45,21 @@ export default function NewTransactionPage() {
     queryFn: () => companiesApi.list({ page: 1, pageSize: 50 }),
   });
 
+  const emptySubscriptions: PaginatedResponse<Subscription> = {
+    data: [],
+    pagination: {
+      page: 1,
+      pageSize: 50,
+      total: 0,
+      totalPages: 0,
+    },
+  };
+
   const { data: subscriptionsData, isLoading: isLoadingSubscriptions } =
     useQuery({
       queryKey: ["subscriptions", companyId],
       queryFn: () => {
-        if (!companyId) return { data: [] };
+        if (!companyId) return emptySubscriptions;
         return subscriptionsApi.list(companyId, { page: 1, pageSize: 50 });
       },
       enabled: !!companyId,
@@ -123,7 +134,7 @@ export default function NewTransactionPage() {
   }
 
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="w-full  space-y-6">
       <Link
         href={`/transactions?companyId=${companyId}`}
         className="inline-flex items-center gap-2 text-sm text-slate-400 transition-colors hover:text-slate-300"

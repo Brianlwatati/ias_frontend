@@ -1,3 +1,14 @@
+export interface AuthCompany {
+  id: number;
+  name: string;
+  code: string;
+  email: string;
+  phone: string;
+  status: "ACTIVE" | "INACTIVE" | "SUSPENDED" | string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface AuthUser {
   id: string;
   email: string;
@@ -5,6 +16,7 @@ export interface AuthUser {
   lastName: string;
   role: "super_admin" | "company_admin" | "member";
   companyId: string | null;
+  company?: AuthCompany;
   isActive: boolean;
 }
 
@@ -32,5 +44,11 @@ export interface AuthResponse {
   data: {
     user: AuthUser;
     tokens: AuthTokens;
+  };
+}
+
+export interface MeResponse {
+  data: {
+    user: AuthUser;
   };
 }

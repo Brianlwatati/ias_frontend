@@ -105,7 +105,7 @@ export default function NewSubscriptionPage() {
   }
 
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="max-full space-y-6">
       <div>
         <Link
           href={`/subscriptions?companyId=${companyId}`}

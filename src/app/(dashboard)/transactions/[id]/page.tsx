@@ -13,18 +13,6 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import type { ApiError } from "@/types/api";
 
-const statusColorMap: Record<
-  string,
-  "success" | "warning" | "danger" | "neutral" | "brand"
-> = {
-  PENDING: "warning",
-  COMPLETED: "success",
-  FAILED: "danger",
-  CANCELLED: "danger",
-  SUCCESS: "success",
-  REFUNDED: "warning",
-};
-
 const transactionTypeColorMap: Record<
   string,
   "success" | "warning" | "danger" | "neutral" | "brand"
@@ -165,7 +153,7 @@ export default function TransactionDetailPage() {
   }
 
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="w-full space-y-6">
       <Link
         href={`/transactions?companyId=${companyId}`}
         className="inline-flex items-center gap-2 text-sm text-slate-400 transition-colors hover:text-slate-300"
@@ -195,7 +183,7 @@ export default function TransactionDetailPage() {
               </label>
               <div className="mt-2">
                 <Badge
-                  color={transactionTypeColorMap[transaction.transactionType]}
+                  tone={transactionTypeColorMap[transaction.transactionType]}
                 >
                   {transaction.transactionType}
                 </Badge>
@@ -216,7 +204,7 @@ export default function TransactionDetailPage() {
                 Status
               </label>
               <div className="mt-2">
-                <Badge color={statusColorMap[transaction.status]}>
+                <Badge tone={statusColorMap[transaction.status]}>
                   {transaction.status}
                 </Badge>
               </div>
@@ -346,9 +334,7 @@ export default function TransactionDetailPage() {
                     Subscription Status
                   </label>
                   <div className="mt-2">
-                    <Badge color="info">
-                      {transaction.subscription.status}
-                    </Badge>
+                    <Badge tone="info">{transaction.subscription.status}</Badge>
                   </div>
                 </div>
 
@@ -357,7 +343,7 @@ export default function TransactionDetailPage() {
                     Payment Status
                   </label>
                   <div className="mt-2">
-                    <Badge color="info">
+                    <Badge tone="info">
                       {transaction.subscription.paymentStatus}
                     </Badge>
                   </div>
@@ -424,7 +410,7 @@ export default function TransactionDetailPage() {
                 <option value="CANCELLED">Cancelled</option>
                 <option value="REFUNDED">Refunded</option>
               </select>
-              <Badge color={statusColorMap[currentStatus]}>
+              <Badge tone={statusColorMap[currentStatus]}>
                 {currentStatus}
               </Badge>
             </div>

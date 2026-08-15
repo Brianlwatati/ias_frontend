@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 export function Header() {
   const { user, logout } = useAuth();
+  console.log("user", user);
 
   return (
     <header className="flex h-16 items-center justify-between border-b border-surface-border px-6">

@@ -4,7 +4,7 @@ import type {
   AuthResponse,
   LoginPayload,
   RegisterPayload,
-  AuthUser,
+  MeResponse,
 } from "@/types/auth";
 
 export const authApi = {
@@ -21,5 +21,5 @@ export const authApi = {
       .then((r) => r.data);
   },
 
-  me: () => apiClient.get<AuthUser>("/auth/me").then((r) => r.data),
+  me: () => apiClient.get<MeResponse>("/auth/me").then((r) => r.data.data.user),
 };
