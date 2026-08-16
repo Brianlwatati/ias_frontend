@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
@@ -11,6 +11,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { usersApi } from "@/lib/api/users";
 import { companiesApi } from "@/lib/api/companies";
+import { rolesApi } from "@/lib/api/roles";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import type { ApiError } from "@/types/api";
@@ -18,7 +19,7 @@ import type { ApiError } from "@/types/api";
 // Kept in sync with the SYSTEM_ROLE_TONE / getSystemRoleLabel mapping on the
 // users list page — update both places together if the backend adds roles.
 const SYSTEM_ROLES = [
-  { id: 1, label: "Super Administrator" },
+  // { id: 1, label: "Super Administrator" }, // Not used in the UI, but exists in the backend
   { id: 2, label: "Company Administrator" },
 ];
 
@@ -48,14 +49,58 @@ function NewUserForm() {
     register,
     control,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<UserForm>({
     resolver: zodResolver(userSchema),
     defaultValues: { companyId: companyIdFromQuery, systemRoleId: "2" },
   });
 
+  const selectedCompanyId = watch("companyId");
+
+  const { data: companyRolesData, isLoading: isLoadingRoles } = useQuery({
+    queryKey: ["company-roles", selectedCompanyId],
+    queryFn: () =>
+      rolesApi.list({
+        page: 1,
+        pageSize: 100,
+        companyId: selectedCompanyId,
+      }),
+    enabled: Boolean(selectedCompanyId),
+  });
+
+  const availableRoles =
+    selectedCompanyId && companyRolesData
+      ? companyRolesData.data
+      : SYSTEM_ROLES;
+
+  useEffect(() => {
+    if (!availableRoles.length) {
+      return;
+    }
+
+    const currentRoleId = watch("systemRoleId");
+    const hasCurrentRole = availableRoles.some(
+      (role) => String(role.id) === currentRoleId,
+    );
+
+    if (!currentRoleId || !hasCurrentRole) {
+      setValue("systemRoleId", String(availableRoles[0]?.id), {
+        shouldValidate: true,
+      });
+    }
+  }, [availableRoles, setValue, watch]);
+
   const { mutate, isPending } = useMutation({
-    mutationFn: usersApi.create,
+    mutationFn: (payload: {
+      companyId: number;
+      firstName: string;
+      lastName: string;
+      email: string;
+      password: string;
+      systemRoleId: number;
+    }) => usersApi.create(payload.companyId, payload),
     onSuccess: (_, variables) => {
       toast.success("User created");
       queryClient.invalidateQueries({ queryKey: ["users"] });
@@ -78,7 +123,7 @@ function NewUserForm() {
   }
 
   return (
-    <div className="max-w-lg space-y-6">
+    <div className="w-full space-y-6">
       <div>
         <Link
           href="/users"
@@ -87,7 +132,9 @@ function NewUserForm() {
           <ArrowLeft className="h-4 w-4" />
           Back to users
         </Link>
-        <h1 className="mt-3 text-xl font-semibold text-slate-100">Invite user</h1>
+        <h1 className="mt-3 text-xl font-semibold text-slate-100">
+          Invite user
+        </h1>
         <p className="mt-1 text-sm text-slate-400">
           Creates a user under the selected company.
         </p>
@@ -95,7 +142,10 @@ function NewUserForm() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="card space-y-4">
         <div className="space-y-1.5">
-          <label htmlFor="companyId" className="text-sm font-medium text-slate-300">
+          <label
+            htmlFor="companyId"
+            className="text-sm font-medium text-slate-300"
+          >
             Company
           </label>
           <Controller
@@ -150,13 +200,24 @@ function NewUserForm() {
         />
 
         <div className="space-y-1.5">
-          <label htmlFor="systemRoleId" className="text-sm font-medium text-slate-300">
+          <label
+            htmlFor="systemRoleId"
+            className="text-sm font-medium text-slate-300"
+          >
             Role
           </label>
-          <select id="systemRoleId" className="input" {...register("systemRoleId")}>
-            {SYSTEM_ROLES.map((role) => (
+          <select
+            id="systemRoleId"
+            className="input"
+            disabled={isLoadingRoles || !availableRoles.length}
+            {...register("systemRoleId")}
+          >
+            {!availableRoles.length && (
+              <option value="">No roles available for this company</option>
+            )}
+            {availableRoles.map((role) => (
               <option key={role.id} value={role.id}>
-                {role.label}
+                {"label" in role ? role.label : role.name}
               </option>
             ))}
           </select>

@@ -119,7 +119,7 @@ export default function NewRolePage() {
   }
 
   return (
-    <div className="max-w-lg space-y-6">
+    <div className="w-full space-y-6">
       <div>
         <Link
           href="/roles"
@@ -139,26 +139,6 @@ export default function NewRolePage() {
         onSubmit={handleSubmit(onSubmit)}
         className="card space-y-4 width-full"
       >
-        <div className="grid grid-cols-2 gap-4">
-          <Input
-            id="name"
-            label="Role name"
-            placeholder="Company Admin"
-            error={errors.name?.message}
-            {...register("name")}
-          />
-          <Input
-            id="code"
-            label="Code"
-            placeholder="HR_FINANCE"
-            value={generatedCode || ""}
-            onChange={(event) =>
-              setValue("code", event.target.value, { shouldDirty: true })
-            }
-            error={errors.code?.message}
-          />
-        </div>
-
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <label
@@ -198,6 +178,26 @@ export default function NewRolePage() {
               <p className="text-xs text-danger">{errors.productId.message}</p>
             )}
           </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Input
+            id="name"
+            label="Role name"
+            placeholder="Company Admin"
+            error={errors.name?.message}
+            {...register("name")}
+          />
+          <Input
+            id="code"
+            label="Code"
+            placeholder="HR_FINANCE"
+            value={generatedCode || ""}
+            onChange={(event) =>
+              setValue("code", event.target.value, { shouldDirty: true })
+            }
+            error={errors.code?.message}
+          />
         </div>
 
         <Input

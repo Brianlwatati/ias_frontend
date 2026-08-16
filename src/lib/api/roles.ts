@@ -6,6 +6,7 @@ export const rolesApi = {
     page?: number;
     pageSize?: number;
     productId?: number;
+    companyId?: number | string;
     scope?: string;
   }) => unwrapList<Role>(apiClient.get("/roles", { params })),
 

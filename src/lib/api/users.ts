@@ -11,24 +11,39 @@ export const usersApi = {
     unwrapList<ManagedUser>(
       apiClient.get<ListEnvelope<ManagedUser>>(
         params?.companyId
-          ? `/usercompanies/${params.companyId}/users`
+          ? `/companies/${params.companyId}/users`
           : "/usercompanies",
         { params: { ...params, companyId: undefined } },
       ),
     ),
 
-  get: (id: string) =>
-    unwrap<ManagedUser>(apiClient.get<ApiEnvelope<ManagedUser>>(`/users/${id}`)),
-
-  create: (payload: CreateUserPayload) =>
+  get: (companyId: number | string, id: string | number) =>
     unwrap<ManagedUser>(
-      apiClient.post<ApiEnvelope<ManagedUser>>("/users", payload),
+      apiClient.get<ApiEnvelope<ManagedUser>>(
+        `/companies/${companyId}/users/${id}`,
+      ),
     ),
 
-  update: (id: string, payload: UpdateUserPayload) =>
+  create: (companyId: number | string, payload: CreateUserPayload) =>
     unwrap<ManagedUser>(
-      apiClient.patch<ApiEnvelope<ManagedUser>>(`/users/${id}`, payload),
+      apiClient.post<ApiEnvelope<ManagedUser>>(
+        `/companies/${companyId}/users`,
+        payload,
+      ),
     ),
 
-  remove: (id: string) => apiClient.delete(`/users/${id}`).then((r) => r.data),
+  update: (
+    companyId: number | string,
+    id: string | number,
+    payload: UpdateUserPayload,
+  ) =>
+    unwrap<ManagedUser>(
+      apiClient.patch<ApiEnvelope<ManagedUser>>(
+        `/companies/${companyId}/users/${id}`,
+        payload,
+      ),
+    ),
+
+  remove: (companyId: number | string, id: string | number) =>
+    apiClient.delete(`/companies/${companyId}/users/${id}`).then((r) => r.data),
 };

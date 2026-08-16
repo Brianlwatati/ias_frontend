@@ -15,15 +15,17 @@ import {
 } from "@/components/ui/Table";
 import { Button } from "@/components/ui/Button";
 
-const SYSTEM_ROLE_TONE: Record<number, "brand" | "warning" | "neutral"> = {
-  1: "brand",
-  2: "warning",
-};
+function getRoleBadgeTone(
+  roleCode?: string | null,
+): "brand" | "warning" | "info" | "neutral" {
+  const normalizedCode = (roleCode ?? "").toUpperCase();
 
-function getSystemRoleLabel(systemRoleId: number) {
-  if (systemRoleId === 1) return "Super Administrator";
-  if (systemRoleId === 2) return "Company Administrator";
-  return "User";
+  if (normalizedCode.includes("SUPER_ADMIN")) return "brand";
+  if (normalizedCode.includes("_ADMIN")) return "warning";
+  if (normalizedCode.includes("USER") || normalizedCode.includes("MEMBER"))
+    return "info";
+
+  return "neutral";
 }
 
 export default function UsersPage() {
@@ -40,7 +42,9 @@ export default function UsersPage() {
     if (!companies || companies.length === 0) {
       return;
     }
-    setSelectedCompanyId((current) => current || String(companies[0]?.id ?? ""));
+    setSelectedCompanyId(
+      (current) => current || String(companies[0]?.id ?? ""),
+    );
   }, [companiesData]);
 
   const {
@@ -87,7 +91,13 @@ export default function UsersPage() {
           </select>
         </div>
 
-        <Link href={selectedCompanyId ? `/users/new?companyId=${selectedCompanyId}` : "#"}>
+        <Link
+          href={
+            selectedCompanyId
+              ? `/users/new?companyId=${selectedCompanyId}`
+              : "#"
+          }
+        >
           <Button disabled={!selectedCompanyId}>Invite user</Button>
         </Link>
       </div>
@@ -115,6 +125,7 @@ export default function UsersPage() {
           <TableRow>
             <TableCell header>Name</TableCell>
             <TableCell header>Email</TableCell>
+            <TableCell header>Phone</TableCell>
             <TableCell header>Role</TableCell>
             <TableCell header>Status</TableCell>
             <TableCell header>Last login</TableCell>
@@ -159,9 +170,10 @@ export default function UsersPage() {
                 {user.firstName} {user.lastName}
               </TableCell>
               <TableCell>{user.email}</TableCell>
+              <TableCell>{user.phone}</TableCell>
               <TableCell>
-                <Badge tone={SYSTEM_ROLE_TONE[user.systemRoleId] ?? "neutral"}>
-                  {getSystemRoleLabel(user.systemRoleId)}
+                <Badge tone={getRoleBadgeTone(user.roleCode)}>
+                  {user.roleName ?? user.roleCode ?? "User"}
                 </Badge>
               </TableCell>
               <TableCell>

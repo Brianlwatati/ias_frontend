@@ -10,6 +10,7 @@ import html2canvas from "html2canvas";
 import { Button } from "@/components/ui/Button";
 // import { TransactionReceipt } from "@/components/transactions/TransactionReceipt";
 import { TransactionReceiptTwo } from "@/components/transactions/TransactionReceiptFour";
+import { TransactionReceiptThree } from "@/components/transactions/TransactionThrees";
 import { TransactionReceiptAlt } from "@/components/transactions/TransactionReceipttwo";
 import { useAuth } from "@/hooks/useAuth";
 import { companiesApi } from "@/lib/api/companies";
@@ -127,7 +128,7 @@ function TransactionReceiptContent() {
 
       <div className="flex justify-center">
         <div className="w-full max-w-[860px]">
-          <TransactionReceiptTwo
+          <TransactionReceiptThree
             ref={receiptRef}
             transaction={transaction}
             user={user}
