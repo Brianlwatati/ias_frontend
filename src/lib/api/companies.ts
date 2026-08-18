@@ -35,12 +35,36 @@ export const companiesApi = {
       apiClient.patch<ApiEnvelope<Company>>(`/companies/${id}`, payload),
     ),
 
+  updateStatus: (
+    id: string | number,
+    status: "ACTIVE" | "INACTIVE" | "SUSPENDED",
+  ) =>
+    unwrap<Company>(
+      apiClient.patch<ApiEnvelope<Company>>(`/companies/${id}/status`, {
+        status,
+      }),
+    ),
+
   assignProduct: (companyId: number | string, productId: number | string) =>
     unwrap<unknown>(
       apiClient.post<ApiEnvelope<unknown>>(
         `/companies/${companyId}/companyproducts`,
         {
           productId,
+        },
+      ),
+    ),
+
+  updateCompanyProductStatus: (
+    companyId: number | string,
+    productId: number | string,
+    status: "ACTIVE" | "INACTIVE" | "SUSPENDED",
+  ) =>
+    unwrap<CompanyProduct>(
+      apiClient.patch<ApiEnvelope<CompanyProduct>>(
+        `/companies/${companyId}/companyproducts/${productId}/status`,
+        {
+          status,
         },
       ),
     ),

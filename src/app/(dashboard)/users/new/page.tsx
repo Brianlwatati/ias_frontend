@@ -28,6 +28,7 @@ const userSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().email("Enter a valid email"),
+  phone: z.string().min(6, "Enter a valid phone number"),
   password: z.string().min(8, "Password must be at least 8 characters"),
   systemRoleId: z.string().min(1, "Select a role"),
 });
@@ -98,6 +99,7 @@ function NewUserForm() {
       firstName: string;
       lastName: string;
       email: string;
+      phone: string;
       password: string;
       systemRoleId: number;
     }) => usersApi.create(payload.companyId, payload),
@@ -117,6 +119,7 @@ function NewUserForm() {
       firstName: values.firstName,
       lastName: values.lastName,
       email: values.email,
+      phone: values.phone,
       password: values.password,
       systemRoleId: Number(values.systemRoleId),
     });
@@ -189,6 +192,14 @@ function NewUserForm() {
           placeholder="user@company.com"
           error={errors.email?.message}
           {...register("email")}
+        />
+        <Input
+          id="phone"
+          type="tel"
+          label="Phone"
+          placeholder="+1 555 123 4567"
+          error={errors.phone?.message}
+          {...register("phone")}
         />
         <Input
           id="password"

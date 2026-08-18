@@ -44,6 +44,18 @@ export const usersApi = {
       ),
     ),
 
+  updateStatus: (
+    companyId: number | string,
+    id: string | number,
+    status: "ACTIVE" | "INACTIVE" | "PENDING",
+  ) =>
+    unwrap<ManagedUser>(
+      apiClient.patch<ApiEnvelope<ManagedUser>>(
+        `/companies/${companyId}/users/${id}/status`,
+        { status },
+      ),
+    ),
+
   remove: (companyId: number | string, id: string | number) =>
     apiClient.delete(`/companies/${companyId}/users/${id}`).then((r) => r.data),
 };

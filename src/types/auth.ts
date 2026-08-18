@@ -15,6 +15,9 @@ export interface AuthUser {
   firstName: string;
   lastName: string;
   role: "super_admin" | "company_admin" | "member";
+  roleCode?: string | null;
+  roleName?: string | null;
+  roleScopeKey?: string | null;
   companyId: string | null;
   company?: AuthCompany;
   isActive: boolean;

@@ -282,6 +282,31 @@ export const TransactionReceiptThree = forwardRef<
               <p className="font-mono text-xs text-[#94A3B8]">
                 {receiverCompany?.code ?? ""}
               </p>
+
+              {receiverCompany?.address && (
+                <p className="mt-0.5 text-xs leading-snug text-[#94A3B8]">
+                  {receiverCompany.address}
+                </p>
+              )}
+              {receiverCompany?.taxId && (
+                <p className="mt-0.5 text-xs text-[#94A3B8]">
+                  Tax ID {receiverCompany.taxId}
+                </p>
+              )}
+            </div>
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#94A3B8]">
+                Prepared by
+              </p>
+              <p className="mt-1 font-medium text-[#0F172A]">
+                {preparedByName}
+              </p>
+              <p className="text-xs text-[#94A3B8]">{user?.email ?? ""}</p>
+            </div>
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#94A3B8]">
+                Recipient
+              </p>
               {receiverCompany?.email && (
                 <p className="mt-0.5 text-xs text-[#94A3B8]">
                   {receiverCompany.email}
@@ -302,15 +327,6 @@ export const TransactionReceiptThree = forwardRef<
                   Tax ID {receiverCompany.taxId}
                 </p>
               )}
-            </div>
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#94A3B8]">
-                Prepared by
-              </p>
-              <p className="mt-1 font-medium text-[#0F172A]">
-                {preparedByName}
-              </p>
-              <p className="text-xs text-[#94A3B8]">{user?.email ?? ""}</p>
             </div>
           </div>
 

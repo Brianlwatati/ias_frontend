@@ -9,15 +9,13 @@ export function Header() {
 
   return (
     <header className="flex h-16 items-center justify-between border-b border-surface-border px-6">
-      <div className="text-sm text-slate-400">
-        {user?.companyId ? `Tenant: ${user.companyId}` : "Super admin"}
-      </div>
+      <div className="text-sm text-slate-400">{user?.roleScopeKey}</div>
       <div className="flex items-center gap-4">
         <div className="text-right">
           <p className="text-sm font-medium text-slate-100">
             {user ? `${user.firstName} ${user.lastName}` : "—"}
           </p>
-          <p className="text-xs text-slate-500">{user?.role}</p>
+          <p className="text-xs text-slate-500">{user?.roleName}</p>
         </div>
         <button
           onClick={() => logout()}

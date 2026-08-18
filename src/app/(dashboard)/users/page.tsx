@@ -129,6 +129,7 @@ export default function UsersPage() {
             <TableCell header>Role</TableCell>
             <TableCell header>Status</TableCell>
             <TableCell header>Last login</TableCell>
+            <TableCell header>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -182,6 +183,14 @@ export default function UsersPage() {
                 </Badge>
               </TableCell>
               <TableCell>{user.lastLoginAt ?? "Never"}</TableCell>
+              <TableCell>
+                <Link
+                  href={`/users/${user.id}/edit?companyId=${selectedCompanyId}`}
+                  className="text-sm text-brand-400 hover:text-brand-300"
+                >
+                  View details
+                </Link>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

@@ -27,5 +27,6 @@ export interface ManagedUser {
 export interface UpdateUserPayload extends Partial<
   Omit<CreateUserPayload, "password" | "companyId">
 > {
+  phone?: string;
   status?: string;
 }
