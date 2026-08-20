@@ -166,7 +166,7 @@ export default function UsersPage() {
               </TableRow>
             )}
           {usersData?.data.map((user) => (
-            <TableRow key={user.id}>
+            <TableRow key={user.userId}>
               <TableCell>
                 {user.firstName} {user.lastName}
               </TableCell>
@@ -185,7 +185,7 @@ export default function UsersPage() {
               <TableCell>{user.lastLoginAt ?? "Never"}</TableCell>
               <TableCell>
                 <Link
-                  href={`/users/${user.id}/edit?companyId=${selectedCompanyId}`}
+                  href={`/users/${user.userId}/edit?companyId=${selectedCompanyId}`}
                   className="text-sm text-brand-400 hover:text-brand-300"
                 >
                   View details

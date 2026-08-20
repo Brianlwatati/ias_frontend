@@ -8,7 +8,7 @@ export interface CreateUserPayload {
 }
 
 export interface ManagedUser {
-  id: number;
+  userId: string;
   companyId: number;
   email: string;
   phone: string;
